@@ -124,25 +124,84 @@ class SortedArray
     return nil
   end
 
-  def each &block
+
+def each &block
     # loop over all elements in @internal_arr
     # yield to each element
 
     # let's keep track of our index
+    i = 0
+    while i < @internal_arr.length
+      yield @internal_arr[i]
+      i += 1
+    end
+    @internal_arr
   end
 
   def each_with_index &block
+    index = 0
+    self.each do |item| 
+    yield item, index
+    index += 1
+    end
+
   end
 
   def map &block
+    new_array = []
+    index = 0
+    each do |item|
+      new_array << yield(item)
+      index += 1
+    end
+    return new_array
   end
 
   def map! &block
+    index = 0
+    each do |item|
+      @internal_arr[index] = yield(item)
+      index += 1
+    end
+    return @internal_arr
   end
+
 
   def find &block
+    each do |item|
+      if yield(item)     
+        return item
+      end
+    end
+    return nil
   end
 
-  def inject acc=nil, &block
+
+def inject acc=nil, &block
+    if !acc.nil? 
+        acc = acc 
+        self.each do |item| 
+          acc = yield(acc, item) 
+        end
+    else
+      acc = 0
+      self.each do |item| 
+        acc = yield(acc, item) 
+      end
+      # yield item
+    end
+    return acc
   end
-end
+end  #CLASS
+#CLASS
+
+trash = SortedArray.new()
+trash.add 2
+trash.add 3
+trash.add 4
+trash.add 7
+trash.add 9
+#trash.map {|index| puts index}
+puts trash
+#puts trash.find {|item| item > 4 }
+puts trash.inject(0) {|acc, item| item}
